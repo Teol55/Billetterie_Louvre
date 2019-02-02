@@ -47,10 +47,10 @@ class Visitor
     private $price;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="visitors")
+     * @ORM\ManyToOne(targetEntity="Ticket", inversedBy="visitors")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $orderId;
+    private $order;
 
     public function getId(): ?int
     {
@@ -124,20 +124,30 @@ class Visitor
 
     public function setPrice(?float $price): self
     {
+
         $this->price = $price;
 
         return $this;
     }
 
-    public function getOrderId(): ?Order
+    public function getOrder(): ?Ticket
     {
-        return $this->orderId;
+        return $this->order;
     }
 
-    public function setOrderId(?Order $orderId): self
+    public function setOrder(?Ticket $order): self
     {
-        $this->orderId = $orderId;
+        $this->order = $order;
 
         return $this;
+    }
+    public function age($date)
+    {
+        $date = $date->format('Y-m-d H:i:s');
+        $age=date('Y') - date('Y',strtotime($date));
+        if(date('md')< date('md',strtotime($date))){
+            return $age -1;
+        }
+        return $age;
     }
 }
