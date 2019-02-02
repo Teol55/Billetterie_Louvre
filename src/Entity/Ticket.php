@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
+ * @ORM\Entity(repositoryClass="TicketRepository")
  */
-class Order
+class Ticket
 {
     /**
      * @ORM\Id()
@@ -44,15 +44,16 @@ class Order
     private $reference;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Visitor", mappedBy="orderId", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Visitor", mappedBy="order")
      */
     private $visitors;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Customer", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="ticket")
      * @ORM\JoinColumn(nullable=false)
      */
     private $customer;
+
 
     public function __construct()
     {
@@ -136,7 +137,7 @@ class Order
     {
         if (!$this->visitors->contains($visitor)) {
             $this->visitors[] = $visitor;
-            $visitor->setOrderId($this);
+            $visitor->setOrder($this);
         }
 
         return $this;
@@ -147,8 +148,8 @@ class Order
         if ($this->visitors->contains($visitor)) {
             $this->visitors->removeElement($visitor);
             // set the owning side to null (unless already changed)
-            if ($visitor->getOrderId() === $this) {
-                $visitor->setOrderId(null);
+            if ($visitor->getOrder() === $this) {
+                $visitor->setOrder(null);
             }
         }
 
@@ -160,10 +161,11 @@ class Order
         return $this->customer;
     }
 
-    public function setCustomer(Customer $customer): self
+    public function setCustomer(?Customer $customer): self
     {
         $this->customer = $customer;
 
         return $this;
     }
+
 }
