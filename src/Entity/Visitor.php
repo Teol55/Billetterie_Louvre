@@ -50,7 +50,7 @@ class Visitor
      * @ORM\ManyToOne(targetEntity="Ticket", inversedBy="visitors")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $order;
+    private $ticket;
 
     public function getId(): ?int
     {
@@ -130,24 +130,19 @@ class Visitor
         return $this;
     }
 
-    public function getOrder(): ?Ticket
+    public function getTicket(): ?Ticket
     {
-        return $this->order;
+        return $this->ticket;
     }
 
-    public function setOrder(?Ticket $order): self
+    public function setTicket(?Ticket $ticket): self
     {
-        $this->order = $order;
+        $this->ticket = $ticket;
 
         return $this;
     }
-    public function age($date)
+    public function age()
     {
-        $date = $date->format('Y-m-d H:i:s');
-        $age=date('Y') - date('Y',strtotime($date));
-        if(date('md')< date('md',strtotime($date))){
-            return $age -1;
-        }
-        return $age;
+        return $this->getBirthday()->diff($this->getTicket()->getDateVisit())->y;
     }
 }
