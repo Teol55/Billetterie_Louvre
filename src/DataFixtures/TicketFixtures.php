@@ -14,24 +14,24 @@ class TicketFixtures extends BaseFixtures implements  DependentFixtureInterface
 
     protected function loadData(ObjectManager $manager)
     {
-        $this->createMany(1000, 'main_order', function($i) use ($manager) {
+        $this->createMany(1000, 'main_ticket', function($i) use ($manager) {
 
-            $order=new Ticket();
-
-
-
-            $order->setDateVisit($this->faker->dateTimeBetween('1 days', '360 days'));
-            $order->setTypeTicket($this->faker->randomKey(['Journée','Demi-journée']));
-            $order->setCreatedAt(new \DateTime());
-            $order->setPrice(45);
+            $ticket=new Ticket();
 
 
 
-            $order->setCustomer($this->getRandomReference('main_customer'));
+            $ticket->setDateVisit($this->faker->dateTimeBetween('1 days', '360 days'));
+            $ticket->setTypeTicket($this->faker->randomKey(['Journée','Demi-journée']));
+            $ticket->setCreatedAt(new \DateTime());
+            $ticket->setPrice(45);
 
-            $order->setReference($i);
 
-            return $order;
+
+            $ticket->setCustomer($this->getRandomReference('main_customer'));
+
+            $ticket->setReference($i);
+
+            return $ticket;
 
         });
         $manager->flush();

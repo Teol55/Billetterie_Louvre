@@ -17,8 +17,8 @@ class VisitorFixtures extends BaseFixtures implements DependentFixtureInterface
             $visitor= new Visitor();
             $visitor->setName($this->faker->name)->setFirstName($this->faker->firstName)->setCountry($this->faker->country)
             ->setBirthday($this->faker->dateTimeBetween('-70 years ', '- 2 years'));
-
-            $age=$visitor->age($visitor->getBirthday());
+            $visitor->setTicket($this->getRandomReference('main_ticket'));
+            $age=$visitor->age();
 
             if($age>'4' && $age <= '12')
             {
@@ -33,7 +33,7 @@ class VisitorFixtures extends BaseFixtures implements DependentFixtureInterface
             }
             else $visitor->setPrice(0);
 
-            $visitor->setOrder($this->getRandomReference('main_order'));
+            $visitor->setTicket($this->getRandomReference('main_ticket'));
 
             return $visitor;
         });
