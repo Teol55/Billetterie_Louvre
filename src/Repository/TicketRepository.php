@@ -19,22 +19,18 @@ class TicketRepository extends ServiceEntityRepository
         parent::__construct($registry, Ticket::class);
     }
 
-    // /**
-    //  * @return Order[] Returns an array of Order objects
-    //  */
-    /*
-    public function findByExampleField($value)
+
+    public function countByDateVisit($date)
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('o.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('t')
+            ->select('COUNT(t.visitors)')
+            ->andwhere('t.dateVisit = :date')
+            ->setParameter('date',$date)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getSingleScalarResult();
+
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?Order

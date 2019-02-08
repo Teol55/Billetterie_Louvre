@@ -18,7 +18,19 @@ class VisitorRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Visitor::class);
     }
+    public function countByDateVisit($date)
+    {
+        return $this->createQueryBuilder('v')
+            ->innerJoin('v.ticket','t')
+            ->select('COUNT(v.id)')
+            ->andWhere('t.dateVisit>= :date_start')
+            ->andWhere('t.dateVisit <= :date_end')
+            ->setParameter('date_start', $date->format('Y-m-d 00:00:00'))
+            ->setParameter('date_end',   $date->format('Y-m-d 23:59:59'))
+            ->getQuery()
+            ->getSingleScalarResult();
 
+    }
     // /**
     //  * @return Visitor[] Returns an array of Visitor objects
     //  */
