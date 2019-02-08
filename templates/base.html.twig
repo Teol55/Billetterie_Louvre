@@ -38,6 +38,8 @@
 </nav>
 
 {% block body %}{% endblock %}
+
+
 <footer class="footer">
     <div class="container text-center">
         <span class="text-muted">Fait avec <i class="fa fa-heart" style="color: red;"></i> par <a href="http///Atipicwebdesign.fr">AtipicWebDesign</a> pour un projet d'étude</span>
@@ -56,15 +58,22 @@
     $('.dropdown-toggle').dropdown();
 
 </script>
+
 <script>
     $(document).ready(function(){
-        var date_input=$('input[name="date"]'); //our date input has the name "date"
+        var date_input=$('input[name="order_form[dateVisit]"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         var options={
-            format: 'dd/mm/yyyy',
+            language: "fr",
+            format: 'yyyy-mm-dd ',
             container: container,
             todayHighlight: true,
             autoclose: true,
+            startDate: '-3d',
+            weekStart: 1,
+            daysOfWeekDisabled: "2",
+            endDate: "+1y",
+
         };
         date_input.datepicker(options);
     })

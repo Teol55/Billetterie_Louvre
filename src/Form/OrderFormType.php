@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Ticket;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class OrderFormType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('dateVisit',DateType::class,[
+                'widget' => 'single_text',
+                'attr' => ['class' => 'js-datepicker'],
+
+                'html5' => false,
+            ])
+            ->add('typeTicket',ChoiceType::class,[
+                'help' => 'Votre visite peux durer que la demi-journée!',
+                'label'=> 'Choix du type de visite',
+                'choices'=>['Journée'=>'tarifJournee','Demi-Journée'=> 'tarifDemiJournée']
+
+
+            ])
+            ->add('numberPlace',IntegerType::class,[
+                'mapped'=>false,
+                'attr' => [
+
+                    'min'  => 1,
+                    'max'  => 10,
+                    'step' => 1
+                ]
+            ])
+
+
+
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+//        $resolver->setDefaults([
+//            'data_class' => Ticket::class,
+//        ]);
+    }
+}
