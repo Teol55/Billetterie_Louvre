@@ -137,7 +137,7 @@ class Ticket
     {
         if (!$this->visitors->contains($visitor)) {
             $this->visitors[] = $visitor;
-            $visitor->setOrder($this);
+            $visitor->setTicket($this);
         }
 
         return $this;
@@ -148,8 +148,8 @@ class Ticket
         if ($this->visitors->contains($visitor)) {
             $this->visitors->removeElement($visitor);
             // set the owning side to null (unless already changed)
-            if ($visitor->getOrder() === $this) {
-                $visitor->setOrder(null);
+            if ($visitor->getTicket() === $this) {
+                $visitor->setTicket(null);
             }
         }
 

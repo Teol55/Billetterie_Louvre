@@ -26,10 +26,10 @@ class VisitorTest extends WebTestCase
      */
     public function testAge($date,$age)
     {
-        $order = new Ticket();
-        $order->setDateVisit(new \DateTime('2020-01-01'));
+        $ticket = new Ticket();
+        $ticket->setDateVisit(new \DateTime('2020-01-01'));
         $visitor=  new Visitor();
-        $visitor->setOrder($order);
+        $visitor->setTicket($ticket);
         $visitor->setBirthday(new \DateTime($date));
 
 
