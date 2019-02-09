@@ -24,13 +24,16 @@ class TicketController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
            $data = $form->getData();
+//           dd($data);
+//            $ticket=new Ticket();
+//            $ticket->setDateVisit($data['dateVisit']);
 //         dd($data['dateVisit']);
 //            $ticket=new Ticket();
 //            $ticket->setDateVisit($data['dateVisit']);
 //            $ticket->setTypeTicket($data['typeTicket']);
 ////           $dateVisit=$data['typeTicket'];
 //            dd($ticket);
-
+dd(strftime ("%A",strtotime(date_format($data['Ticket']['dateVisit'],"d-m-Y"))));
         dd($Repository->countByDateVisit($data['dateVisit']));
 
         }

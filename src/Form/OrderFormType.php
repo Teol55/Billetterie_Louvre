@@ -31,7 +31,7 @@ class OrderFormType extends AbstractType
 
             ])
             ->add('numberPlace',IntegerType::class,[
-                'mapped'=>false,
+
                 'attr' => [
 
                     'min'  => 1,
@@ -47,8 +47,8 @@ class OrderFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-//        $resolver->setDefaults([
-//            'data_class' => Ticket::class,
-//        ]);
+        $resolver->setDefaults([
+            'data_class' => Ticket::class,
+        ]);
     }
 }

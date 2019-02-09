@@ -20,16 +20,16 @@ class TicketRepository extends ServiceEntityRepository
     }
 
 
-    public function countByDateVisit($date)
-    {
-        return $this->createQueryBuilder('t')
-            ->select('COUNT(t.visitors)')
-            ->andwhere('t.dateVisit = :date')
-            ->setParameter('date',$date)
-            ->getQuery()
-            ->getSingleScalarResult();
-
-    }
+//    public function countByDateVisit($date)
+//    {
+//        return $this->createQueryBuilder('t')
+//            ->select('COUNT(t.visitors)')
+//            ->andwhere('t.dateVisit = :date')
+//            ->setParameter('date',$date)
+//            ->getQuery()
+//            ->getSingleScalarResult();
+//
+//    }
 
 
     /*
