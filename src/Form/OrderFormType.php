@@ -18,6 +18,7 @@ class OrderFormType extends AbstractType
     {
         $builder
             ->add('dateVisit',DateType::class,[
+                'label'=>'Date de votre visite:',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'js-datepicker'],
 
@@ -25,7 +26,7 @@ class OrderFormType extends AbstractType
             ])
             ->add('typeTicket',ChoiceType::class,[
                 'help' => 'Votre visite peux durer que la demi-journée!',
-                'label'=> 'Choix du type de visite',
+                'label'=> 'Type de visite:',
                 'choices'=>['Journée'=>'tarifJournee','Demi-Journée'=> 'tarifDemiJournée']
 
 
@@ -37,7 +38,8 @@ class OrderFormType extends AbstractType
                     'min'  => 1,
                     'max'  => 10,
                     'step' => 1
-                ]
+                ],
+                'label'=>'Nombres de Places:',
             ])
 
 
