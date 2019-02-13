@@ -204,40 +204,21 @@ class Ticket
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-//            le musee est fermé les mardis
-        if(strftime ("%A",strtotime(date_format($this->dateVisit,"d-m-Y")))==='Tuesday'){
+//Traitement de dates
 
-            $context->buildViolation('Le musée du Louvre est fermé tous les mardi')
-                ->atpath('dateVisit')
-                ->addViolation();
-
-        }
-//        le musee est ouvert le dimanche mais fermé à la réservation
-
-        if(strftime ("%A",strtotime(date_format($this->dateVisit,"d-m-Y")))==='Sunday'){
-
-            $context->buildViolation('La réservation pour le dimanche est fermée mais le musée est ouvert')
-                ->atpath('dateVisit')
-                ->addViolation();
-
-        }
-//        le musée est fermé le 1er Mai le 1er Novembre et le 25Déecembre
-
-
-        $dateString=date_format($this->dateVisit,"d-m");
         $dateTimestamp=$this->dateVisit->getTimestamp();
+        $dateString=date_format($this->dateVisit,"d-m");
+
 
         $year=intval(date_format($this->dateVisit,"Y"));
-
-        //jours ferié Variable
+//jours ferié Variable
         $easterDate=easter_date($year);
 
         $easterDay   = date('j', $easterDate);
         $easterMonth = date('n', $easterDate);
         $easterYear   = date('Y', $easterDate);
 
-
-
+//Tableau des jours ferié
 
         $dateOff=array(
             // Dates fixes
@@ -252,6 +233,25 @@ class Ticket
             mktime(0, 0, 0, $easterMonth, $easterDay + 40, $easterYear),
             mktime(0, 0, 0, $easterMonth, $easterDay + 51, $easterYear),
         );
+
+// le musee est fermé les mardis
+        if(date('l',$dateTimestamp)==='Tuesday'){
+
+            $context->buildViolation('Le musée du Louvre est fermé tous les mardi')
+                ->atpath('dateVisit')
+                ->addViolation();
+
+        }
+//le musee est ouvert le dimanche mais fermé à la réservation
+
+        if(date('l',$dateTimestamp)==='Sunday'){
+
+            $context->buildViolation('La réservation pour le dimanche est fermée mais le musée est ouvert')
+                ->atpath('dateVisit')
+                ->addViolation();
+
+        }
+// le musée est fermé le 1er Mai le 1er Novembre et le 25Déecembre
 
 
         switch ($dateString)
@@ -274,12 +274,29 @@ class Ticket
 
         }
 
-//         Jours feriés ouvert mais réservation fermée
+//Jours feriés ouvert mais réservation fermée
 
         if(in_array($dateTimestamp,$dateOff)){
             $context->buildViolation('le musée est ouvert sans réservation')
                 ->atpath('dateVisit')
                 ->addViolation();
+        }
+//Réservation journée impossible aprés 14h le jour même
+        if(date_format($this->dateVisit,"d-m-Y")==date("d-m-Y") && date('h-i',time())> date('h-i',mktime(14,0,0))&& $this->typeTicket =='tarifJournee')
+        {
+
+
+            $context->buildViolation('Aprés 9h du matin, vous devez prendre un billet demi-journée')
+                ->atpath('dateVisit')
+                ->addViolation();
+        }
+//Réservation interdite pour les jours antérieurs
+        if( $dateTimestamp<time() && !date_format($this->dateVisit,"d-m-Y")==date("d-m-Y") )
+        {
+            $context->buildViolation('Le voyage dans le temps n\'a pas encore était inventé ;)')
+                ->atpath('dateVisit')
+                ->addViolation();
+
         }
     }
 
