@@ -29,11 +29,15 @@ class ToManyVisitorValidator extends ConstraintValidator
 
     }
 
-    public function validate($value, Constraint $constraint)
+    public function validate($object, Constraint $constraint)
     {
+        if(!$object instanceof Ticket){
+            throw new \LogicException();
+        }
+
         /* @var $constraint App\Validator\ToManyVisitor */
-            $numberVistor=$this->repository->countByDateVisit($value);
-            if($numberVistor > 1000) {
+            $numberVistor=$this->repository->countByDateVisit($object->getDateVisit());
+            if($numberVistor + $object->getNumberPlace() > 1000) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('{{ value }}', $numberVistor)
                     ->addViolation();

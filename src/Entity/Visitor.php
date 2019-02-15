@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Visitor
 {
+    const VISIT_FULL_DAY = 'tarifJournee';
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

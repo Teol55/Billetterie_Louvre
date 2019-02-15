@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraint;
 
 /**
  * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
 class ToManyVisitor extends Constraint
 {
@@ -15,4 +14,11 @@ class ToManyVisitor extends Constraint
      * Then, use these in your validator class.
      */
     public $message = 'Nous sommes désolé,il n\'y a plus de places';
+
+    public function getTargets()
+    {
+        return Constraint::CLASS_CONSTRAINT;
+    }
+
+
 }
