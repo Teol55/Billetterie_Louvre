@@ -21,17 +21,17 @@ class TicketController extends AbstractController
     /**
      * @Route("/", name="app_homepage")
      */
-    public function index(Request $request, VisitorRepository $Repository,SessionInterface $session)
+    public function index(Request $request, VisitorRepository $Repository, SessionInterface $session)
     {
-        $form=$this->createForm(OrderFormType::class);
+        $form = $this->createForm(OrderFormType::class);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-           $ticket= $form->getData();
-           $session->set('ticket',$ticket);
-           $session->set('numberVisitor',$ticket->getNumberPlace());
+            $ticket = $form->getData();
+            $session->set('ticket', $ticket);
+            $session->set('numberVisitor', $ticket->getNumberPlace());
 
 
             return $this->redirectToRoute('app_visitor', [
@@ -39,90 +39,71 @@ class TicketController extends AbstractController
             ]);
         }
 
-        return $this->render('homepage.html.twig',[
+        return $this->render('homepage.html.twig', [
             'orderForm' => $form->createView()
 
         ]);
     }
+
     /**
      * @Route("/visiteurs", name="app_visitor")
      */
-    public function visitor(TicketRepository $repository,SessionInterface $session,Request $request)
-
+    public function visitor(TicketRepository $repository, SessionInterface $session, Request $request)
     {
-        $form=$this->createForm(VisitorFormType::class);
+        /** @var Ticket $ticket */
+        $ticket = $session->get('ticket');
 
+        if (!$ticket->needAnotherVisitor()) {
+            return $this->redirectToRoute('app_customer');
+        }
+
+
+        $form = $this->createForm(VisitorFormType::class);
         $form->handleRequest($request);
 
 
-        if ($form->isSubmitted() && $form->isValid()){
-            $nbVisitor=$session->get('numberVisitor');
-            $nbVisitor=$nbVisitor-1;
-            $session->set('numberVisitor',$nbVisitor);
-            if($nbVisitor<0)
-            {
-                throw new Exception("Merci de ne pas renvoyer le formulaire");
-            }
-
-
-            
-            $visitor=$form->getData();
-
-            $ticket=$session->get('ticket');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $visitor = $form->getData();
             $ticket->addVisitor($visitor);
-            $form=$this->createForm(VisitorFormType::class);
-
-            if($nbVisitor>0){
-                return $this->render('visitor.html.twig', [
-                    'visitorForm' => $form->createView()
-                ]);
-            }
-           else
-
-               return $this->redirectToRoute('app_customer', [
-
-
-
-           ]);
-
+            return $this->redirectToRoute('app_visitor');
         }
 
         return $this->render('visitor.html.twig', [
             'visitorForm' => $form->createView()
-
         ]);
     }
+
     /**
      * @Route("/test", name="app_test")
      */
-    public function test(TicketRepository $repository,SessionInterface $session,Request $request,CalculatePriceVisitor $priceVisitor)
+    public function test(TicketRepository $repository, SessionInterface $session, Request $request, CalculatePriceVisitor $priceVisitor)
 
     {
-        $ticket=$session->get('ticket');
+        $ticket = $session->get('ticket');
         $priceVisitor->visitorPrice($ticket);
-            dd($session);
+        dd($session);
         return $this->render('test.html.twig', [
 
 
         ]);
     }
+
     /**
      * @Route("/Adresse", name="app_customer")
      */
-    public function customer(TicketRepository $repository,SessionInterface $session,Request $request)
+    public function customer(TicketRepository $repository, SessionInterface $session, Request $request)
 
     {
-        $form=$this->createForm(CustomerFormType::class);
+        $form = $this->createForm(CustomerFormType::class);
 
         $form->handleRequest($request);
 
 
-        if ($form->isSubmitted() && $form->isValid()){
-            $customer=$form->getData();
-            $ticket=$session->get('ticket');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $customer = $form->getData();
+            $ticket = $session->get('ticket');
             $ticket->setCustomer($customer);
             return $this->redirectToRoute('app_payment', [
-
 
 
             ]);
@@ -134,13 +115,14 @@ class TicketController extends AbstractController
 
         ]);
     }
+
     /**
      * @Route("/payment", name="app_payment")
      */
-    public function payment(TicketRepository $repository,SessionInterface $session,Request $request,CalculatePriceVisitor $priceVisitor)
+    public function payment(TicketRepository $repository, SessionInterface $session, Request $request, CalculatePriceVisitor $priceVisitor)
 
     {
-        $ticket=$session->get('ticket');
+        $ticket = $session->get('ticket');
         $priceVisitor->visitorPrice($ticket);
 
         dd($session);

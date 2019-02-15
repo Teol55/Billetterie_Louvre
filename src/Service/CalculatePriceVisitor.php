@@ -14,47 +14,49 @@ use App\Entity\Visitor;
 
 class CalculatePriceVisitor
 {
-    private $priceTicket =0;
+
+
+    const COEFF_FULL_DAY = 1;
+    const COEFF_HALF_DAY = 0.5;
 
     public function visitorPrice(Ticket $ticket)
-        {
-            $visitors=$ticket->getVisitors();
+    {
+        $priceTicket = 0;
 
-            if($ticket->getTypeTicket()=='tarifJournee'){
-                    $typetarif= 1;
-            }
-            else $typetarif= 0.5;
-
-            foreach ($visitors as $visitor)
-            {
-                $age=$visitor->age();
-                if($visitor->getReduction()==='true'){
+        $visitors = $ticket->getVisitors();
 
 
-                }
+        $coeff = ($ticket->getTypeTicket() == Visitor::VISIT_FULL_DAY) ? self::COEFF_FULL_DAY : self::COEFF_HALF_DAY;
 
-                if($age>'4' && $age <= '12')
-                {
-                    $visitor->setPrice(8*$typetarif);
-                }
+        foreach ($visitors as $visitor) {
+            $age = $visitor->age();
 
 
-                elseif ($age>'12' && $age <'60') {
+//            if($age < 4){
+//                $visitor->setPrice(0);
+//            }elseif ($age < 12){
+//
+//            }elseif($age < 60){
+//
+//            }else{
+//
+//            }
 
-                    if($visitor->getReduction()=== false)
-                    {$visitor->setPrice(16*$typetarif);}
-                    else $visitor->setPrice(10);
-                }
-                elseif ( $age >='60')
-                {
-                    if($visitor->getReduction()=== false)
-                    {$visitor->setPrice(12*$typetarif);}
-                    else $visitor->setPrice(10);
-                }
-                else $visitor->setPrice(0);
+            if ($age > '4' && $age <= '12') {
+                $visitor->setPrice(8 * $coeff);
+            } elseif ($age > '12' && $age < '60') {
 
-                $this->priceTicket+=$visitor->getPrice();
-            }
-            $ticket->setPrice($this->priceTicket);
+                if ($visitor->getReduction() === false) {
+                    $visitor->setPrice(16 * $coeff);
+                } else $visitor->setPrice(10);
+            } elseif ($age >= '60') {
+                if ($visitor->getReduction() === false) {
+                    $visitor->setPrice(12 * $coeff);
+                } else $visitor->setPrice(10);
+            } else $visitor->setPrice(0);
+
+            $priceTicket += $visitor->getPrice();
         }
+        $ticket->setPrice($priceTicket);
+    }
 }

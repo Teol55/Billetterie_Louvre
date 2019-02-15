@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use App\Validator\DayOffClose;
+use App\Validator\DayOffOpen;
+use App\Validator\NotBefore;
+use App\Validator\NotPriceDayAfter14;
+use App\Validator\NotSunday;
+use App\Validator\NotTuesday;
 use App\Validator\ToManyVisitor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,8 +17,9 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="TicketRepository")
- * @ORM\Entity
  * @ORM\Table(name="ticket")
+ * @ToManyVisitor()
+ * @NotPriceDayAfter14()
  */
 class Ticket
 {
@@ -26,7 +33,11 @@ class Ticket
     /**
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank(message="Vous devez Selectionner une date de visite!")
-     * @ToManyVisitor()
+     * @NotTuesday()
+     * @NotSunday()
+     * @NotBefore()
+     * @DayOffClose()
+     * @DayOffOpen()
      */
     private $dateVisit;
 
@@ -51,7 +62,7 @@ class Ticket
     private $reference;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Visitor", mappedBy="order")
+     * @ORM\OneToMany(targetEntity="App\Entity\Visitor", mappedBy="ticket")
      */
     private $visitors;
 
@@ -81,6 +92,11 @@ class Ticket
     public function getNumberPlace()
     {
         return $this->numberPlace;
+    }
+
+
+    public function needAnotherVisitor():bool {
+        return $this->visitors->count() != $this->numberPlace;
     }
 
 
@@ -204,100 +220,14 @@ class Ticket
      */
     public function validate(ExecutionContextInterface $context, $payload)
     {
-//Traitement de dates
-
-        $dateTimestamp=$this->dateVisit->getTimestamp();
-        $dateString=date_format($this->dateVisit,"d-m");
 
 
-        $year=intval(date_format($this->dateVisit,"Y"));
-//jours ferié Variable
-        $easterDate=easter_date($year);
-
-        $easterDay   = date('j', $easterDate);
-        $easterMonth = date('n', $easterDate);
-        $easterYear   = date('Y', $easterDate);
-
-//Tableau des jours ferié
-
-        $dateOff=array(
-            // Dates fixes
-            mktime(0, 0, 0, 1,  1,  $year),  // 1er janvier
-            mktime(0, 0, 0, 5,  8,  $year),  // Victoire des alliés
-            mktime(0, 0, 0, 7,  14, $year),  // Fête nationale
-            mktime(0, 0, 0, 8,  15, $year),  // Assomption
-            mktime(0, 0, 0, 11, 11, $year),  // Armistice
-
-            // Dates variables
-            mktime(0, 0, 0, $easterMonth, $easterDay + 2,  $easterYear),
-            mktime(0, 0, 0, $easterMonth, $easterDay + 40, $easterYear),
-            mktime(0, 0, 0, $easterMonth, $easterDay + 51, $easterYear),
-        );
-
-// le musee est fermé les mardis
-        if(date('l',$dateTimestamp)==='Tuesday'){
-
-            $context->buildViolation('Le musée du Louvre est fermé tous les mardi')
-                ->atpath('dateVisit')
-                ->addViolation();
-
-        }
-//le musee est ouvert le dimanche mais fermé à la réservation
-
-        if(date('l',$dateTimestamp)==='Sunday'){
-
-            $context->buildViolation('La réservation pour le dimanche est fermée mais le musée est ouvert')
-                ->atpath('dateVisit')
-                ->addViolation();
-
-        }
-// le musée est fermé le 1er Mai le 1er Novembre et le 25Déecembre
 
 
-        switch ($dateString)
-        {
-            case'25-12':
-                $context->buildViolation('le musée est fermé le 25 Décembre')
-                    ->atpath('dateVisit')
-                    ->addViolation();
-                break;
-            case'01-11':
-                $context->buildViolation('le musée est fermé le 1er Novembre')
-                    ->atpath('dateVisit')
-                    ->addViolation();
-                break;
-            case'01-05':
-                $context->buildViolation('le musée est fermé le 1er Mai')
-                    ->atpath('dateVisit')
-                    ->addViolation();
-                break;
-
-        }
-
-//Jours feriés ouvert mais réservation fermée
-
-        if(in_array($dateTimestamp,$dateOff)){
-            $context->buildViolation('le musée est ouvert sans réservation')
-                ->atpath('dateVisit')
-                ->addViolation();
-        }
-//Réservation journée impossible aprés 14h le jour même
-        if(date_format($this->dateVisit,"d-m-Y")==date("d-m-Y") && date('h-i',time())> date('h-i',mktime(14,0,0))&& $this->typeTicket =='tarifJournee')
-        {
 
 
-            $context->buildViolation('Aprés 9h du matin, vous devez prendre un billet demi-journée')
-                ->atpath('dateVisit')
-                ->addViolation();
-        }
-//Réservation interdite pour les jours antérieurs
-        if( $dateTimestamp<time() && !date_format($this->dateVisit,"d-m-Y")==date("d-m-Y") )
-        {
-            $context->buildViolation('Le voyage dans le temps n\'a pas encore était inventé ;)')
-                ->atpath('dateVisit')
-                ->addViolation();
 
-        }
+
     }
 
 
