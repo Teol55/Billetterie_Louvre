@@ -30,6 +30,11 @@ class Customer
      */
     private $ticket;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $stripeCustomerId;
+
     public function __construct()
     {
         $this->ticket = new ArrayCollection();
@@ -79,6 +84,18 @@ class Customer
                 $ticket->setCustomer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): self
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
 
         return $this;
     }
