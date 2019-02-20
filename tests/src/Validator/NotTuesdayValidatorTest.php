@@ -8,37 +8,27 @@
 
 namespace App\Tests\src\Validator;
 
-
+use Symfony\Bridge\PhpUnit\DnsMock;
 use App\Validator\NotTuesday;
 use App\Validator\NotTuesdayValidator;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
-class NotTuesdayValidatorTest extends ValidatorTestAbstract
+
+class NotTuesdayValidatorTest extends ConstraintValidatorTestCase
 {
 
-    /**
-     * Retourne une instance du validateur à tester.
-     *
-     * @return ConstraintValidator
-     */
-    protected function getValidatorInstance()
+
+    protected function createValidator()
     {
         return new NotTuesdayValidator();
     }
 
     public function NotTuesdayTestOk()
     {
-        $notTuesdayConstraint=New NotTuesday();
-        $notTuesdayValidator=$this->initValidator();
 
-       $this->assertTrue($notTuesdayValidator->validate(new \DateTime('2019-02-19'),$notTuesdayConstraint));
-       $this->assertSame(1,1);
+        $this->validator->validate('2019-02-19', new NotTuesday());
+        $this->assertNoViolation();
     }
-    public function NotTuesdayTestKO()
-    {
-        $notTuesdayConstraint = New NotTuesday();
-        $notTuesdayValidator = $this->initValidator($notTuesdayConstraint->message);
 
-        $this->assertNotTrue($notTuesdayValidator->validate(new \DateTime('2019-02-16'),$notTuesdayConstraint->message));
-    }
 }

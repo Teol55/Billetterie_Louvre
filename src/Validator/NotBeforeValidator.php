@@ -12,9 +12,10 @@ class NotBeforeValidator extends ConstraintValidator
         //Réservation interdite pour les jours antérieurs
 
         /* @var $constraint App\Validator\NotBefore */
+
         $dateTimestamp=$value->getTimestamp();
 
-        if( $dateTimestamp <time() && !date_format($value,"d-m-Y")==date("d-m-Y") ) {
+        if($dateTimestamp <time() && !(date_format($value,"d-m-Y")==date("d-m-Y")) ) {
 
             $this->context->buildViolation($constraint->message)
                     ->addViolation();
