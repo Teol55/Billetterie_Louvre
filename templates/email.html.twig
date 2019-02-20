@@ -506,9 +506,9 @@
 
                                                                 <p style="margin: 10px 0;padding: 0;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #757575;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;">Nous Sommes tres heureux de vous acceuillir.</p>
                                                                 {% for visitor in ticket.visitors %}
-                                                                <p style="margin: 10px 0;padding: 0;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #757575;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;"> {{ visitor.name }}  {{ visitor.firstName }} né le  {{ visitor.birthday|date("d/m/Y")  }} pour le prix de {{ visitor.price }}€<p>
+                                                                <p style="margin: 10px 0;padding: 0;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #757575;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;"> {{ visitor.name|upper }}  {{ visitor.firstName }} né le  {{ visitor.birthday|date("d/m/Y")  }} pour le prix de {{ visitor.price }}€<p>
                                                                 {% endfor %}
-                                                                <p style="margin: 10px 0;padding: 0;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #757575;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;">Votre Numéero de réservation :{{ ticket.reference }}</p>
+                                                                <p style="margin: 10px 0;padding: 0;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #757575;font-family: Helvetica;font-size: 16px;line-height: 150%;text-align: left;">Votre Numéro de réservation :{{ ticket.reference }} pour un montant total de : {{ ticket.price }}</p>
                                                             </td>
                                                         </tr>
                                                         </tbody></table>
