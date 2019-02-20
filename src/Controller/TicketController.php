@@ -8,6 +8,8 @@ use App\Entity\Visitor;
 use App\Form\CustomerFormType;
 use App\Form\OrderFormType;
 use App\Form\VisitorFormType;
+use App\Model\TicketManager;
+use App\Repository\CustomerRepository;
 use App\Repository\TicketRepository;
 use App\Repository\VisitorRepository;
 use App\Service\CalculatePriceVisitor;
@@ -27,6 +29,7 @@ class TicketController extends AbstractController
      */
     public function index(Request $request, VisitorRepository $Repository, SessionInterface $session)
     {
+
         $form = $this->createForm(OrderFormType::class);
 
         $form->handleRequest($request);
@@ -95,7 +98,7 @@ class TicketController extends AbstractController
     /**
      * @Route("/Adresse", name="app_customer")
      */
-    public function customer(TicketRepository $repository, SessionInterface $session, Request $request)
+    public function customer(TicketRepository $repository, SessionInterface $session, Request $request,TicketManager $ticketManager)
 
     {
         $form = $this->createForm(CustomerFormType::class);
@@ -105,8 +108,17 @@ class TicketController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $customer = $form->getData();
+
             $ticket = $session->get('ticket');
-            $ticket->setCustomer($customer);
+
+            $testCustomer=$ticketManager->findCustomer($customer->getAdresseEmail());
+            if(!$testCustomer){
+                $ticket->setCustomer($customer);
+            }
+            else $ticket->setCustomer($testCustomer);
+
+
+
             return $this->redirectToRoute('app_payment', [
 
 
@@ -123,7 +135,7 @@ class TicketController extends AbstractController
     /**
      * @Route("/payment", name="app_payment")
      */
-    public function payment( SessionInterface $session, Request $request, CalculatePriceVisitor $priceVisitor,StripeService $stripeClient,ObjectManager $em,\Swift_Mailer $mailer)
+    public function payment( SessionInterface $session, Request $request, CalculatePriceVisitor $priceVisitor,StripeService $stripeClient,ObjectManager $em,TicketManager $ticketManager)
 
     {
         $ticket = $session->get('ticket');
@@ -132,15 +144,11 @@ class TicketController extends AbstractController
         if ($request->isMethod('POST')) {
             $token = $request->request->get('stripeToken');
 
-
-
-
             /** @var Customer $customer */
 
             $customer = $ticket->getCustomer();
 
             if (!$customer->getStripeCustomerId()) {
-
 
                 $stripeClient->createCustomer($customer, $token);
             } else {
@@ -149,7 +157,7 @@ class TicketController extends AbstractController
             }
             /**@var Visitor $visitor */
             foreach ($ticket->getVisitors() as $visitor) {
-                $em->persist($visitor);
+
                 $stripeClient->createInvoiceItem(
                     $visitor->getPrice() * 100,
                     $customer,
@@ -158,18 +166,10 @@ class TicketController extends AbstractController
                 );
             }
             $stripeClient->createInvoice($customer, true);
-            $ticket->setCreatedAt(new \DateTime());
-            $ticket->setReference(date_format($ticket->getCreatedAt(),'Ymd').$customer->getStripeCustomerId());
-            $em->persist($ticket->getCustomer());
 
-            $em->persist($ticket);
-            $em->flush();
-            $message=(new \Swift_Message('Confirmation de Commande'))
-                ->SetFrom('Billettrie@louvre.fr')
-                ->setTo($customer->getAdresseEmail())
-                ->setBody($this->renderView('email.html.twig',
-                    ['ticket'=> $ticket]),'text/html');
-            $mailer->send($message);
+            $ticketManager->save($ticket);
+
+            $ticketManager->sendMessage($ticket);
 
             $this->addFlash('success', 'Order Complete! Yay!');
 
@@ -189,16 +189,13 @@ class TicketController extends AbstractController
     /**
      * @Route("/confirmation", name="app_confirmation")
      */
-    public function confirmation( SessionInterface $session, Request $request, CalculatePriceVisitor $priceVisitor,StripeService $stripe)
+    public function confirmation( SessionInterface $session)
 
     {
-        $ticket = $session->get('ticket');
+        $session->clear();
 
 
         return $this->render('confirmation.html.twig', [
-            'ticket'=> $ticket,
-
-
-        ]);
+                    ]);
     }
 }
