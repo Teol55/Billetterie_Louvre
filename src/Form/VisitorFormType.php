@@ -30,7 +30,7 @@ class VisitorFormType extends AbstractType
                 'years' =>Range(-100,0)])
             ->add('reduction',null,[
                 'label'=>'Tarif réduit:',
-                'help'=>'Vous devrez présenter votre carte lors de de votre arrivée au musée',
+                'help'=>'Vous devrez présenter votre carte lors de votre arrivée au musée',
             ])
 
 

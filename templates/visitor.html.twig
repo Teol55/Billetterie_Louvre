@@ -3,49 +3,75 @@
 
 
 {% block body %}
-<div class="container">
-    <div class="row">
-
-        <!-- Article List -->
-
-        <div class="col-sm-12 col-md-8">
-
-            <!-- H1 Article -->
-            <a class="main-article-link" href="#">
-                <div class="main-article mb-5 pb-3">
-                    <img src="{{ asset('images/louvre.jpeg') }}" alt="Images du louvre">
-                    <h1 class="text-center mt-2">DECOUVREZ NOTRE MUSEE <br>Réservez vos Billets</h1>
-                </div>
-            </a>
-        </div>
-    </div>
-
-
-
-                    <!-- Form code begins -->
-    <div class="bootstrap-iso">
-        <div class="container-fluid">
+    <div class="container">
         <div class="row">
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            {% block content %}
 
-                {{ form_start(visitorForm) }}
+            <!-- Article List -->
+
+            <div class="col-sm-12 col-md-8">
+
+                <!-- H1 Article -->
+                <a class="main-article-link" href="#">
+                    <div class="main-article mb-5 pb-3">
+                        <img src="{{ asset('images/louvre.jpeg') }}" alt="Images du louvre">
+                        <h1 class="text-center mt-2">DECOUVREZ NOTRE MUSEE <br>Ajoutez un Visiteur</h1>
+                    </div>
+                </a>
 
 
 
-                {{ form_widget(visitorForm) }}
-            {% endblock %}
+            <!-- Form code begins -->
+            <div class="bootstrap-iso">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            {% block content %}
+
+                                {{ form_start(visitorForm) }}
 
 
-    <button type="submit" class="btn btn-primary">Ajouter</button>
-    {{ form_end(visitorForm) }}
-    </div>
+
+                                {{ form_widget(visitorForm) }}
+                            {% endblock %}
+
+
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                            {{ form_end(visitorForm) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div></div>
+            <!-- Form code ends -->
+
+
+
+        <div class="col-sm-12 col-md-4 text-center">
+            <div class="ad-space mx-auto mt-1 pb-2 pt-2">
+                <img class="advertisement-img" src="{{ asset('images/louvre4.jpg') }}">
+                <p><span class="advertisement-text">New:</span> Exposition!</p>
+                <button class="btn btn-info">Réservez!</button>
+            </div>
+
+            <div class="quote-space pb-2 pt-2 px-5">
+                <h3 class="text-center pb-3">Votre Visite du {{ ticket.dateVisit|date('d/m/Y') }} </h3>
+                <p><i class="fa fa-comment"></i> "Tarif:  {% if(ticket.typeTicket=='tarifJournee' ) %}{{ 'journée' }}{% else %}{{ 'demi-journée' }}{% endif %}
+                    " <br></p>
+                {% for visitor in ticket.visitors %}
+                    <p class="pt-4"><i class="fa fa-comment"></i> "{{ visitor.name }} {{ visitor.firstName }} " <br>prix du Billet : {{ visitor.price }}€<br></p>
+                {% endfor %}
+                {{ ticket.price ?  'Total: '~ticket.price~'€' : ''}}
+
+
+            </div>
         </div>
-        </div>
+    </div>
+
     </div>
 
 
-                    <!-- Form code ends -->
+
+
 
 
 

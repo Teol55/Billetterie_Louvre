@@ -25,7 +25,7 @@ class OrderFormType extends AbstractType
                 'html5' => false,
             ])
             ->add('typeTicket',ChoiceType::class,[
-                'help' => 'Votre visite peux durer que la demi-journée!',
+                'help' => 'Demi tarif pour les vistes en demi-journée',
                 'label'=> 'Type de visite:',
                 'choices'=>['Journée'=>'tarifJournee','Demi-Journée'=> 'tarifDemiJournée']
 

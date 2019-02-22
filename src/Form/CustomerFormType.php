@@ -14,7 +14,7 @@ class CustomerFormType extends AbstractType
         $builder
             ->add('adresseEmail',null,[
                 'label'=>'Indiquez Votre Email:',
-                'help'=>'Votre réservation vous sera envoyé sur votre messagerie.'
+                'help'=>'Vous recevrez votre billet par email.'
             ])
         ;
     }

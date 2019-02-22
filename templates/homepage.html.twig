@@ -17,38 +17,52 @@
                     <h1 class="text-center mt-2">DECOUVREZ NOTRE MUSEE <br>Réservez vos Billets</h1>
                 </div>
             </a>
-        </div>
-    </div>
+        <div class="bootstrap-iso">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        {% block content %}
+
+                            {{ form_start(orderForm) }}
 
 
 
-                    <!-- Form code begins -->
-    <div class="bootstrap-iso">
-        <div class="container-fluid">
-        <div class="row">
-        <div class="col-md-6 col-sm-6 col-xs-12">
-            {% block content %}
-
-                {{ form_start(orderForm) }}
+                            {{ form_widget(orderForm) }}
+                        {% endblock %}
 
 
-
-                {{ form_widget(orderForm) }}
-            {% endblock %}
-
-
-    <button type="submit" class="btn btn-primary">Valider</button>
-    {{ form_end(orderForm) }}
-    </div>
-        </div>
-        </div>
-    </div>
-
-
+                        <button type="submit" class="btn btn-primary">Valider</button>
+                        {{ form_end(orderForm) }}
+                    </div>
                     <!-- Form code ends -->
 
+                </div>
+            </div></div></div>
 
 
 
+    <div class="col-sm-12 col-md-4 text-center">
+        <div class="ad-space mx-auto mt-1 pb-2 pt-2">
+            <img class="advertisement-img" src="{{ asset('images/louvre4.jpg') }}">
+            <p><span class="advertisement-text">New:</span> Exposition!</p>
+            <button class="btn btn-info">Réservez!</button>
+        </div>
 
+        <div class="quote-space pb-2 pt-2 px-5">
+            <h3 class="text-center pb-3">Nos Tarifs</h3>
+            <p><i class="fa fa-comment"></i> "Un tarif « normal » à partir de 12 ans à 16€" <br></p>
+
+            <p class="pt-4"><i class="fa fa-comment"></i> "Un tarif « enfant » à partir de 4 ans et jusqu’à 12 ans, à 8€ (l’entrée est gratuite pour les enfants de moins de 4 ans)" <br></p>
+
+            <p class="pt-4"><i class="fa fa-comment"></i> "Un tarif « senior » à partir de 60 ans pour 12€" <br></p>
+
+            <p class="pt-4"><i class="fa fa-comment"></i> "Un tarif « réduit » de 10€ Etudiant, employé du musée, d’un service du Ministère de la Culture, militaire…)"<br></p>
+        </div>
+    </div>
+
+    </div>
+                    <!-- Form code begins -->
+
+
+</div>
 {% endblock %}
