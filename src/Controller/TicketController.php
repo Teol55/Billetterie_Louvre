@@ -8,7 +8,7 @@ use App\Entity\Visitor;
 use App\Form\CustomerFormType;
 use App\Form\OrderFormType;
 use App\Form\VisitorFormType;
-use App\Model\TicketManager;
+use App\Manager\TicketManager;
 use App\Repository\CustomerRepository;
 use App\Repository\TicketRepository;
 use App\Repository\VisitorRepository;
@@ -27,22 +27,19 @@ class TicketController extends AbstractController
     /**
      * @Route("/", name="app_homepage")
      */
-    public function index(Request $request, VisitorRepository $Repository, SessionInterface $session)
+    public function index(Request $request, TicketManager $ticketManager)
     {
 
-        $form = $this->createForm(OrderFormType::class);
+        $ticket = $ticketManager->initializeTicket();
+
+        $form = $this->createForm(OrderFormType::class, $ticket);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $ticket = $form->getData();
-            $session->set('ticket', $ticket);
-            $session->set('numberVisitor', $ticket->getNumberPlace());
-
-
-            return $this->redirectToRoute('app_visitor', [
-
+            return $this->redirectToRoute('app_visitor',[
+            'ticket'=> $ticket
             ]);
         }
 
@@ -55,13 +52,14 @@ class TicketController extends AbstractController
     /**
      * @Route("/visiteurs", name="app_visitor")
      */
-    public function visitor(TicketRepository $repository, SessionInterface $session, Request $request)
+    public function visitor(TicketManager $ticketManager, Request $request,CalculatePriceVisitor $priceVisitor)
     {
-        /** @var Ticket $ticket */
-        $ticket = $session->get('ticket');
+        $ticket = $ticketManager->getCurrentTicket();
 
         if (!$ticket->needAnotherVisitor()) {
-            return $this->redirectToRoute('app_customer');
+            return $this->redirectToRoute('app_customer',[
+                            'ticket'=> $ticket
+            ]);
         }
 
 
@@ -72,62 +70,50 @@ class TicketController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $visitor = $form->getData();
             $ticket->addVisitor($visitor);
-            return $this->redirectToRoute('app_visitor');
+            $priceVisitor->visitorPrice($ticket);
+            return $this->redirectToRoute('app_visitor',[
+                'ticket'=> $ticket]);
         }
 
         return $this->render('visitor.html.twig', [
-            'visitorForm' => $form->createView()
+            'visitorForm' => $form->createView(),
+            'ticket'=> $ticket
         ]);
     }
 
-    /**
-     * @Route("/test", name="app_test")
-     */
-    public function test(TicketRepository $repository, SessionInterface $session, Request $request, CalculatePriceVisitor $priceVisitor)
-
-    {
-        $ticket = $session->get('ticket');
-        $priceVisitor->visitorPrice($ticket);
-        dd($session);
-        return $this->render('test.html.twig', [
-
-
-        ]);
-    }
 
     /**
      * @Route("/Adresse", name="app_customer")
      */
-    public function customer(TicketRepository $repository, SessionInterface $session, Request $request,TicketManager $ticketManager)
+    public function customer(TicketRepository $repository, Request $request, TicketManager $ticketManager)
 
     {
         $form = $this->createForm(CustomerFormType::class);
 
         $form->handleRequest($request);
-
+        $ticket = $ticketManager->getCurrentTicket();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $customer = $form->getData();
 
-            $ticket = $session->get('ticket');
 
-            $testCustomer=$ticketManager->findCustomer($customer->getAdresseEmail());
-            if(!$testCustomer){
+
+            $testCustomer = $ticketManager->findCustomer($customer->getAdresseEmail());
+
+            if (!$testCustomer) {
                 $ticket->setCustomer($customer);
+            } else {
+                $ticket->setCustomer($testCustomer);
             }
-            else $ticket->setCustomer($testCustomer);
 
 
-
-            return $this->redirectToRoute('app_payment', [
-
-
-            ]);
+            return $this->redirectToRoute('app_payment');
 
         }
 
         return $this->render('customer.html.twig', [
-            'customerForm' => $form->createView()
+            'customerForm' => $form->createView(),
+            'ticket'=> $ticket
 
         ]);
     }
@@ -135,11 +121,15 @@ class TicketController extends AbstractController
     /**
      * @Route("/payment", name="app_payment")
      */
-    public function payment( SessionInterface $session, Request $request, CalculatePriceVisitor $priceVisitor,StripeService $stripeClient,ObjectManager $em,TicketManager $ticketManager)
+    public function payment(Request $request, StripeService $stripeClient, TicketManager $ticketManager)
 
     {
-        $ticket = $session->get('ticket');
-        $priceVisitor->visitorPrice($ticket);
+
+
+        $ticket = $ticketManager->getCurrentTicket();
+
+
+
 
         if ($request->isMethod('POST')) {
             $token = $request->request->get('stripeToken');
@@ -161,7 +151,7 @@ class TicketController extends AbstractController
                 $stripeClient->createInvoiceItem(
                     $visitor->getPrice() * 100,
                     $customer,
-                    $visitor->getName()." ".$visitor->getFirstName()
+                    $visitor->getName() . " " . $visitor->getFirstName()
 
                 );
             }
@@ -171,16 +161,14 @@ class TicketController extends AbstractController
 
             $ticketManager->sendMessage($ticket);
 
-            $this->addFlash('success', 'Order Complete! Yay!');
 
             return $this->redirectToRoute('app_confirmation');
 
         }
 
 
-
         return $this->render('creditCard.html.twig', [
-            'ticket'=> $ticket,
+            'ticket' => $ticket,
 
 
         ]);
@@ -189,13 +177,15 @@ class TicketController extends AbstractController
     /**
      * @Route("/confirmation", name="app_confirmation")
      */
-    public function confirmation( SessionInterface $session)
+    public function confirmation(TicketManager $ticketManager)
 
     {
-        $session->clear();
+        $ticket = $ticketManager->getCurrentTicket();
+        $ticketManager->closeTicket();
 
 
         return $this->render('confirmation.html.twig', [
-                    ]);
+            "ticket" => $ticket
+        ]);
     }
 }

@@ -62,12 +62,12 @@ class Ticket
     private $reference;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Visitor", mappedBy="ticket")
+     * @ORM\OneToMany(targetEntity="App\Entity\Visitor", mappedBy="ticket",cascade={"persist"})
      */
     private $visitors;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="ticket")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="ticket",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $customer;
