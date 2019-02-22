@@ -16,16 +16,14 @@ use Doctrine\ORM\EntityManager;
 class StripeService
 {
 
-
-    public function __construct()
+    public function __construct($privateKey)
     {
 
-        \Stripe\Stripe::setApiKey('sk_test_S0N651W3EYNEHVjz0pkvdCsk');
+        \Stripe\Stripe::setApiKey($privateKey);
     }
     Public function SendCharge($token, Ticket$ticket)
     {
 
-        \Stripe\Stripe::setApiKey('sk_test_S0N651W3EYNEHVjz0pkvdCsk');
         \Stripe\Charge::create(array(
             "amount" => $ticket->getPrice() * 100,
             "currency" => "eur",
