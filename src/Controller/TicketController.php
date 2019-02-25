@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Customer;
 use App\Entity\Ticket;
 use App\Entity\Visitor;
+use App\Form\ContactFormType;
 use App\Form\CustomerFormType;
 use App\Form\OrderFormType;
 use App\Form\VisitorFormType;
@@ -186,6 +187,33 @@ class TicketController extends AbstractController
 
         return $this->render('confirmation.html.twig', [
             "ticket" => $ticket
+        ]);
+    }
+    /**
+     * @Route("/contact", name="app_contact")
+     */
+    public function contact(Request $request,TicketManager $ticketManager)
+    {
+
+
+        $form = $this->createForm(ContactFormType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $message=$form->getData();
+
+            $ticketManager->contactMessage($message);
+
+            return $this->redirectToRoute('app_homepage',[
+
+            ]);
+        }
+
+        return $this->render('contact.html.twig', [
+            'contactForm' => $form->createView()
+
         ]);
     }
 }

@@ -105,4 +105,18 @@ class TicketManager extends AbstractController
     {
         return $this->session->clear();
     }
+    public function contactMessage($form)
+    {
+
+        $message = (new \Swift_Message('Confirmation de Commande'))
+            ->SetFrom($form["emailContact"])
+            ->setTo('emaildulouvre@louvre.fr')
+            ->setBody($this->renderView('emailContact.html.twig',
+                ['message' => $form['messageContact'],
+                    'nom'=>$form['nameContact'],
+                    'email'=>$form['emailContact']
+                ]), 'text/html');
+        $this->swift_Mailer->send($message);
+
+    }
 }

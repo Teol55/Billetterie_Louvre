@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+<div class="container">
+    <div class="row">
+
+        <!-- Article List -->
+
+        <div class="col-sm-12 col-md-8">
+
+            <!-- H1 Article -->
+            <a class="main-article-link" href="#">
+                <div class="main-article mb-5 pb-3">
+                    <img src="{{ asset('images/louvre.jpeg') }}" alt="Images du louvre">
+                    <h1 class="text-center mt-2">DECOUVREZ NOTRE MUSEE <br>CONTACTEZ NOUS</h1>
+                </div>
+            </a>
+        <div class="bootstrap-iso">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        {% block content %}
+
+                            {{ form_start(contactForm) }}
+
+
+
+                            {{ form_widget(contactForm) }}
+                        {% endblock %}
+
+
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                        {{ form_end(contactForm) }}
+                    </div>
+                    <!-- Form code ends -->
+
+                </div>
+            </div></div></div>
+
+
+
+    <div class="col-sm-12 col-md-4 text-center">
+        <div class="ad-space mx-auto mt-1 pb-2 pt-2">
+            <img class="advertisement-img" src="{{ asset('images/louvre4.jpg') }}">
+            <p><span class="advertisement-text">New:</span> Exposition!</p>
+            <button class="btn btn-info">Réservez!</button>
+        </div>
+
+        <div class="quote-space pb-2 pt-2 px-5">
+            <h3 class="text-center pb-3">Pour nous contactez:</h3>
+            <p><i class="fa fa-comment"></i> "L'adresse du <br> 75000 paris" <br></p>
+
+            <p class="pt-4"><i class="fa fa-comment"></i> "01 01 01 01 01" <br></p>
+
+            <p class="pt-4"><i class="fa fa-comment"></i> "emaildulouvre@louvre.fr" <br></p>
+
+
+        </div>
+    </div>
+
+    </div>
+                    <!-- Form code begins -->
+
+
+</div>
+{% endblock %}
