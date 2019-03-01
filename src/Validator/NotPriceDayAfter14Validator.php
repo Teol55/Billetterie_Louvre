@@ -17,7 +17,7 @@ class NotPriceDayAfter14Validator extends ConstraintValidator
         }
 //Réservation journée impossible aprés 14h le jour même
 
-        if(date_format($value->getDateVisit(),"d-m-Y")==date("d-m-Y") && date('h-i',time())> date('h-i',mktime(8,0,0))&& $value->getTypeTicKet()=='tarifJournee') {
+        if((date_format($value->getDateVisit(),"d-m-Y")==date("d-m-Y")) && (date('H-i',time())> date('H-i',mktime(14,0,0)))&& ($value->getTypeTicKet()=='tarifJournee')) {
             $this->context->buildViolation($constraint->message)
                                 ->addViolation();
         }

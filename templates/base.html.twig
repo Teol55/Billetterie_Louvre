@@ -58,14 +58,10 @@
         <!-- Bootstrap Date-Picker Plugin -->
     <script type="text/javascript" src="{{  asset('js/bootstrap-datepicker.js')}}"></script>
 {#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.fr.min.js"></script>#}
-<script>
-    $('.dropdown-toggle').dropdown();
-
-</script>
 
 <script>
     $(document).ready(function(){
-        var date_input=$('input[name="order_form[dateVisit]"]'); //our date input has the name "date"
+        var date_input=$('input[name="order_form[dateVisit]"]');
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         var options={
             language: "fr",

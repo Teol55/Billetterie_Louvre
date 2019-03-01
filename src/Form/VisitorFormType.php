@@ -25,9 +25,8 @@ class VisitorFormType extends AbstractType
             ])
             ->add('birthday',DateType::class,[
                 'label'=>'Date de naissance:',
-                'widget' => 'single_text',
-                'format' => 'yyyy-MM-dd',
-                'years' =>Range(-100,0)])
+                'format' => 'MM-dd-yyyy',
+                'years' =>Range(1900,2019)])
             ->add('reduction',null,[
                 'label'=>'Tarif réduit:',
                 'help'=>'Vous devrez présenter votre carte lors de votre arrivée au musée',
