@@ -16,12 +16,12 @@ class ContactFormType extends AbstractType
     {
         $builder
             ->add('nameContact', TextType::class,[
-                    'label'=>'Indiquez Votre Nom:'
+                    'label'=>'Nom:'
                 ]
 
             )
             ->add('emailContact', EmailType::class,[
-                    'label'=>'Indiquez Votre Email:'
+                    'label'=>'Email:'
                 ]
                 )
 
