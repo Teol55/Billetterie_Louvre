@@ -54,7 +54,7 @@ class TicketManager extends AbstractController
         }
 
         $ticket->setCreatedAt(new \DateTime());
-        $ticket->setReference(date_format($ticket->getCreatedAt(), 'Ymd') . $ticket->getCustomer()->getStripeCustomerId());
+        $ticket->setReference($ticket->getCreatedAt()->getTimestamp() . $ticket->getCustomer()->getStripeCustomerId());
 
 
 
