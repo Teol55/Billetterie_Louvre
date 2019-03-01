@@ -156,6 +156,7 @@ class TicketController extends AbstractController
 
                 );
             }
+
             $stripeClient->createInvoice($customer, true);
 
             $ticketManager->save($ticket);
@@ -205,7 +206,7 @@ class TicketController extends AbstractController
             $message=$form->getData();
 
             $ticketManager->contactMessage($message);
-
+            $this->addFlash('success', 'Votre message a bien été envoyé');
             return $this->redirectToRoute('app_homepage',[
 
             ]);
@@ -213,6 +214,23 @@ class TicketController extends AbstractController
 
         return $this->render('contact.html.twig', [
             'contactForm' => $form->createView()
+
+        ]);
+    }
+    /**
+     * @Route("/test", name="app_test")
+     */
+    public function test(Request $request)
+    {
+
+
+
+
+
+
+
+        return $this->render('test/test.html.twig', [
+
 
         ]);
     }
