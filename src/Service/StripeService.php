@@ -21,16 +21,7 @@ class StripeService
 
         \Stripe\Stripe::setApiKey($privateKey);
     }
-    Public function SendCharge($token, Ticket$ticket)
-    {
 
-        \Stripe\Charge::create(array(
-            "amount" => $ticket->getPrice() * 100,
-            "currency" => "eur",
-            "source" => $token,
-            "description" => "Commande Louvre!"));
-
-    }
 
     public function createCustomer(Customer $user, $paymentToken)
     {
@@ -42,6 +33,7 @@ class StripeService
 
         return $customer;
     }
+
     public function updateCustomerCard(Customer $user, $paymentToken)
     {
         $customer = \Stripe\Customer::retrieve($user->getStripeCustomerId());
@@ -58,6 +50,7 @@ class StripeService
             "description" => $description
         ));
     }
+
     public function createInvoice(Customer $user, $payImmediately = true)
     {
         $invoice = \Stripe\Invoice::create(array(
