@@ -9,7 +9,10 @@
 namespace App\Manager;
 
 use App\Entity\Ticket;
+use App\Entity\Customer;
+use App\Entity\Visitor;
 use App\Repository\CustomerRepository;
+use App\Service\StripeService;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -36,15 +39,20 @@ class TicketManager extends AbstractController
      * @var SessionInterface
      */
     private $session;
+    /**
+     * @var StripeService
+     */
+    private $stripeClient;
 
 
-    public function __construct(\Swift_Mailer $swift_Mailer, ObjectManager $manager, CustomerRepository $customerRepository, SessionInterface $session)
+    public function __construct(\Swift_Mailer $swift_Mailer, ObjectManager $manager, CustomerRepository $customerRepository, SessionInterface $session,StripeService $stripeClient)
     {
 
         $this->swift_Mailer = $swift_Mailer;
         $this->manager = $manager;
         $this->customerRepository = $customerRepository;
         $this->session = $session;
+        $this->stripeClient = $stripeClient;
     }
 
     public function save(Ticket $ticket)
@@ -117,6 +125,33 @@ class TicketManager extends AbstractController
                     'email'=>$form['emailContact']
                 ]), 'text/html');
         $this->swift_Mailer->send($message);
+
+    }
+    public function chargeCustomer(Ticket $ticket, $token)
+    {
+        /** @var Customer $customer */
+
+        $customer = $ticket->getCustomer();
+
+        if (!$customer->getStripeCustomerId()) {
+
+            $this->stripeClient->createCustomer($customer, $token);
+        } else {
+
+            $this->stripeClient->updateCustomerCard($customer, $token);
+        }
+        /**@var Visitor $visitor */
+        foreach ($ticket->getVisitors() as $visitor) {
+
+            $this->stripeClient->createInvoiceItem(
+                $visitor->getPrice() * 100,
+                $customer,
+                $visitor->getName() . " " . $visitor->getFirstName()
+
+            );
+        }
+
+        $this->stripeClient->createInvoice($customer, true);
 
     }
 }

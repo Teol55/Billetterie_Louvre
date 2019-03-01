@@ -128,49 +128,33 @@ class TicketController extends AbstractController
 
 
         $ticket = $ticketManager->getCurrentTicket();
-
+        $error = false;
 
 
 
         if ($request->isMethod('POST')) {
             $token = $request->request->get('stripeToken');
 
-            /** @var Customer $customer */
-
-            $customer = $ticket->getCustomer();
-
-            if (!$customer->getStripeCustomerId()) {
-
-                $stripeClient->createCustomer($customer, $token);
-            } else {
-
-                $stripeClient->updateCustomerCard($customer, $token);
+            try {
+                $ticketManager->chargeCustomer($ticket, $token);
+            } catch (\Stripe\Error\Card $e)
+            {
+                $error='Il y a un probleme de Paiement avec votre carte:'.$e->getMessage();
             }
-            /**@var Visitor $visitor */
-            foreach ($ticket->getVisitors() as $visitor) {
+            if(!$error) {
+                $ticketManager->save($ticket);
 
-                $stripeClient->createInvoiceItem(
-                    $visitor->getPrice() * 100,
-                    $customer,
-                    $visitor->getName() . " " . $visitor->getFirstName()
+                $ticketManager->sendMessage($ticket);
+                $this->addFlash('success', 'Paiement Validé! Bonne visite!');
 
-                );
+                return $this->redirectToRoute('app_confirmation');
             }
-
-            $stripeClient->createInvoice($customer, true);
-
-            $ticketManager->save($ticket);
-
-            $ticketManager->sendMessage($ticket);
-
-
-            return $this->redirectToRoute('app_confirmation');
-
         }
 
 
         return $this->render('creditCard.html.twig', [
             'ticket' => $ticket,
+            'error' => $error,
 
 
         ]);
