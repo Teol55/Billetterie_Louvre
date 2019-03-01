@@ -25,12 +25,26 @@ class NotTuesdayValidatorTest extends ConstraintValidatorTestCase
 
     }
 
-    public function testNotTuesdayTestOk()
+    public function testNotTuesday()
     {
 
         $this->validator->validate(new \DateTime('2019-02-20'), new NotTuesday());
         $this->assertNoViolation();
 
+    }
+
+    public function testTuesday()
+    {
+
+
+        $constraint= new NotTuesday([
+            'message'=> 'myMessage'
+        ]);
+
+        $this->validator->validate(new \DateTime('2019-03-05'),$constraint);
+
+        $this->buildViolation($constraint->message)
+            ->assertRaised();
     }
 
 }
