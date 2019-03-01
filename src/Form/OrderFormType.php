@@ -20,9 +20,6 @@ class OrderFormType extends AbstractType
             ->add('dateVisit',DateType::class,[
                 'label'=>'Date de votre visite:',
                 'widget' => 'single_text',
-                'attr' => ['class' => 'js-datepicker'],
-
-                'html5' => false,
             ])
             ->add('typeTicket',ChoiceType::class,[
                 'help' => 'Demi tarif pour les vistes en demi-journée',
