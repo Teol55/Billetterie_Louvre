@@ -29,6 +29,9 @@
         <div class="container-fluid">
         <div class="row">
         <div class="col-md-6 col-sm-6 col-xs-12 text-center">
+            {% if error %}
+            <div class="alert alert-danger js-checkout-error">{{ error }}</div>
+            {% endif %}
 <form action="" method="POST">
                     <script
                         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
