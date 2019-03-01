@@ -213,22 +213,7 @@ class Ticket
         return $this;
     }
 
-    /**
-     * @Assert\Callback
-     * @param ExecutionContextInterface $context
-     * @param $payload
-     */
-    public function validate(ExecutionContextInterface $context, $payload)
-    {
 
-
-
-
-
-
-
-
-    }
 
 
 }
