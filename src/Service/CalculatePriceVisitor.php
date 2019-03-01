@@ -32,28 +32,20 @@ class CalculatePriceVisitor
             $age = $visitor->age();
 
 
-//            if($age < 4){
-//                $visitor->setPrice(0);
-//            }elseif ($age < 12){
-//
-//            }elseif($age < 60){
-//
-//            }else{
-//
-//            }
-
-            if ($age > '4' && $age <= '12') {
+            if($age < 4){
+                $visitor->setPrice(0);
+            }elseif ($age < 12) {
                 $visitor->setPrice(8 * $coeff);
-            } elseif ($age > '12' && $age < '60') {
+            }elseif ($visitor->getReduction() === true && Visitor::VISIT_FULL_DAY){
+             $visitor->setPrice(10);
+            }elseif($age < 60){
+                $visitor->setPrice(16 * $coeff);
 
-                if ($visitor->getReduction() === false) {
-                    $visitor->setPrice(16 * $coeff);
-                } else $visitor->setPrice(10);
-            } elseif ($age >= '60') {
-                if ($visitor->getReduction() === false) {
-                    $visitor->setPrice(12 * $coeff);
-                } else $visitor->setPrice(10);
-            } else $visitor->setPrice(0);
+            }else{
+                $visitor->setPrice(12 * $coeff);
+            }
+
+
 
             $priceTicket += $visitor->getPrice();
         }
