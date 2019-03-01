@@ -10,7 +10,7 @@
 
         <!-- Article List -->
 
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-12">
 
             <!-- H1 Article -->
             <a class="main-article-link" href="#">
@@ -19,8 +19,8 @@
                     <h1 class="text-center mt-2">DECOUVREZ NOTRE MUSEE <br>Paiement</h1>
                 </div>
             </a>
-
-
+        </div>
+    </div>
 
 
 
@@ -28,34 +28,26 @@
     <div class="bootstrap-iso">
         <div class="container-fluid">
         <div class="row">
-        <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="col-md-6 col-sm-6 col-xs-12 text-center">
 <form action="" method="POST">
                     <script
                         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                         data-key="{{ stripe_public_key}}"
                         data-amount="{{ ticket.price *100}}"
                         data-name="Billetterie du Louvre"
-                        data-description="Widget"
+                        data-description="Paiement"
                         data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
                         data-locale="auto"
                         data-zip-code="true"
                         data-currency="eur"
+                        data-label="Paiement Par Carte"
                         data-email="{{ ticket.customer.adresseEmail}}">
                     </script>
                 </form>
 
+        </div>
 
-</div>
-        </div>
-        </div>
-    </div>
-        </div>
-        <div class="col-sm-12 col-md-4 text-center">
-                <div class="ad-space mx-auto mt-1 pb-2 pt-2">
-                    <img class="advertisement-img" src="{{ asset('images/louvre4.jpg') }}">
-                    <p><span class="advertisement-text">New:</span> Exposition!</p>
-                    <button class="btn btn-info">Réservez!</button>
-                </div>
+        <div class="col-sm-12 col-md-6 text-center">
 
                 <div class="quote-space pb-2 pt-2 px-5">
                     <h3 class="text-center pb-3">Votre Visite du {{ ticket.dateVisit|date('d/m/Y') }} </h3>
@@ -67,10 +59,14 @@
                     {% endfor %}
                     {{ ticket.price ?  'Total: '~ticket.price~'€' : ''}}
 
+                </div>
 
+        </div>
+
+        </div>
                 </div>
             </div>
-        </div>
+</div>
     </div>
 
 

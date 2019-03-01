@@ -27,16 +27,20 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a style="color: #fff;" class="nav-link" href="#">Billetterie</a>
+                <a style="color: #fff;" class="nav-link" href="{{ path('app_homepage') }}">Billetterie</a>
             </li>
             <li class="nav-item">
-                <a style="color: #fff;" class="nav-link" href="#">contact</a>
+                <a style="color: #fff;" class="nav-link" href="{{ path('app_contact') }}">contact</a>
             </li>
         </ul>
 
     </div>
 </nav>
-
+{% for message in app.flashes('success') %}
+<div class="alert alert-success">
+    {{ message }}
+</div>
+{% endfor %}
 {% block body %}{% endblock %}
 
 
