@@ -25,7 +25,7 @@ class VisitorFormType extends AbstractType
             ])
             ->add('birthday',DateType::class,[
                 'label'=>'Date de naissance:',
-                'format' => 'MM-dd-yyyy',
+                'format' => 'dd-MM-yyyy',
                 'years' =>Range(1900,2019)])
             ->add('reduction',null,[
                 'label'=>'Tarif réduit:',

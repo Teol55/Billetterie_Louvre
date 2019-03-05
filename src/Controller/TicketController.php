@@ -137,17 +137,16 @@ class TicketController extends AbstractController
 
             try {
                 $ticketManager->chargeCustomer($ticket, $token);
-            } catch (\Stripe\Error\Card $e)
-            {
-                $error='Il y a un probleme de Paiement avec votre carte:'.$e->getMessage();
-            }
-            if(!$error) {
                 $ticketManager->save($ticket);
 
                 $ticketManager->sendMessage($ticket);
                 $this->addFlash('success', 'Paiement Validé! Bonne visite!');
 
                 return $this->redirectToRoute('app_confirmation');
+
+            } catch (\Stripe\Error\Card $e)
+            {
+                $error='Il y a un probleme de Paiement avec votre carte:'.$e->getMessage();
             }
         }
 
@@ -201,21 +200,5 @@ class TicketController extends AbstractController
 
         ]);
     }
-    /**
-     * @Route("/test", name="app_test")
-     */
-    public function test(Request $request)
-    {
 
-
-
-
-
-
-
-        return $this->render('test/test.html.twig', [
-
-
-        ]);
-    }
 }
