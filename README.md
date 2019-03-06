@@ -1,12 +1,17 @@
 <a href="https://codeclimate.com/github/Teol55/Billetterie_Louvre/maintainability"><img src="https://api.codeclimate.com/v1/badges/4666bac67ab5f4339c27/maintainability" /></a>
-Billetterie du Louvre
+
+**`Billetterie du Louvre`**
+
 It's student project for OpenClassroom with Symfony 4 framework
 
-Requirements
+**Requirements*
+
 PHP 7.1.3 or higher;
 PDO-SQLite PHP extension enabled;
 and the usual Symfony application requirements.
-Installation
+
+**Installation**
+
 Install the Symfony client binary and run this command:
 
 $ symfony new --demo my_project
@@ -20,8 +25,9 @@ $ cd my_project/
 $ symfony serve
 If you don't have the Symfony client installed, run php bin/console server:run. Alternatively, you can configure a web server like Nginx or Apache to run the application.
 
-Tests
+**Tests**
+
 Execute this command to run tests:
 
 $ cd my_project/
-$ ./bin/phpunit
+$ vendor/bin/simple-phpunit
