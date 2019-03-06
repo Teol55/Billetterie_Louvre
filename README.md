@@ -4,7 +4,7 @@
 
 It's student project for OpenClassroom with Symfony 4 framework
 
-**Requirements*
+**Requirements**
 
 PHP 7.1.3 or higher;
 PDO-SQLite PHP extension enabled;
