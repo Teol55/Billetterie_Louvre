@@ -34,7 +34,7 @@ class NotBeforeValidatorTest extends ConstraintValidatorTestCase
     public function testNotBefore()
     {
 
-        $this->validator->validate(new \DateTime('2019-03-03'),new NotBefore());
+        $this->validator->validate(new \DateTime('2019-10-06'),new NotBefore());
         $this->assertNoViolation();
 
     }
